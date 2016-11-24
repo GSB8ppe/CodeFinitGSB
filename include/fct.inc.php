@@ -194,4 +194,22 @@ function nbErreurs(){
 	   return count($_REQUEST['erreurs']);
 	}
 }
+/**
+ * Convertie un numéro de mois en fonction du mois
+ * @param type $numMois
+ * @return string
+ */
+function convertMois($numMois){
+    
+    $lesMois = array("Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Décembre");
+    $nomMois = $lesMois[$numMois-1];
+    return $nomMois;
+            
+}
+function messMois(){
+    $mois = convertMois(date("m"));
+    $annee = date("y");
+    return "Aujourd'hui nous sommes en ".$mois." ".$annee;
+}
 ?>
+
