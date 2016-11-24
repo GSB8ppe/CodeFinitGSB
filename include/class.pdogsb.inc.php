@@ -20,7 +20,7 @@ class PdoGsb{
       	private static $serveur='mysql:host=localhost';
       	private static $bdd='dbname=gsbAppliFrais';   		
       	private static $user='root' ;    		
-      	private static $mdp='mysql' ;	
+      	private static $mdp='' ;//!!!!!!!!!! A CHANGER SELON LES PARAM DE SON LOGIN MYSQL !!!!!!!!!!!!!!!!
 		private static $monPdo;
 		private static $monPdoGsb=null;
 		
@@ -56,17 +56,27 @@ class PdoGsb{
  * @return l'id, le type,le nom et le prénom sous la forme d'un tableau associatif 
 */
 	public function getInfosVisiteur($login, $mdp){
-		$req = "select Visiteur.id as id, Visiteur.nom as nom, Visiteur.prenom as prenom from Visiteur 
-		where Visiteur.login='$login' and Visiteur.mdp='$mdp'";
+                
+		$req = "select utilisateur.id as id, utilisateur.nom as nom, utilisateur.prenom as prenom,utilisateur.idProfil as idProfil from utilisateur 
+		where utilisateur.login='$login' and utilisateur.mdp='$mdp'";
 		$rs = PdoGsb::$monPdo->query($req);
 		$ligne = $rs->fetch();
 		return $ligne;
 	}
-	
+        
+       public function getProfil($login,$mdp)
+       {
+            $req = "select profil.nom as nom from profil where id=(select idProfil from utilisateur where utilisateur.login='$login' and utilisateur.mdp='$mdp')";
+            $rs = PdoGsb::$monPdo->query($req);
+            $nom = $rs->fetch();
+            return $nom;
+       }
+
+        
 
 
-	
-/**
+
+        /**
  * Retourne sous forme d'un tableau associatif toutes les lignes de frais hors forfait
  * concernées par les deux arguments
  

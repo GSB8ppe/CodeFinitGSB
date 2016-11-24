@@ -7,7 +7,7 @@
  */
 function getLesVisiteurs($pdo)
 {
-		$req = "select * from Visiteur";
+		$req = "select * from utilisateur";
 		$res = $pdo->query($req);
 		$lesLignes = $res->fetchAll();
 		return $lesLignes;
@@ -234,7 +234,7 @@ function getDesFraisHorsForfait()
  */
 function updateMdpVisiteur($pdo)
 {
-	$req = "select * from Visiteur";
+	$req = "select * from utilisateur";
 		$res = $pdo->query($req);
 		$lesLignes = $res->fetchAll();
 		$lettres ="azertyuiopqsdfghjkmwxcvbn123456789";
@@ -248,7 +248,7 @@ function updateMdpVisiteur($pdo)
 				$mdp = $mdp.$uneLettrehasard;
 			}
 			
-			$req = "update Visiteur set mdp ='$mdp' where Visiteur.id ='$id' ";
+			$req = "update utilisateur set mdp ='$mdp' where utilisateur.id ='$id' ";
 			$pdo->exec($req);
 		}
 
