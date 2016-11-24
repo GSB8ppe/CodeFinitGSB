@@ -30,7 +30,7 @@
         <span class="sr-only">Navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+        <span class="icon-bar"></span><!--test-->
       </button>
       <a class="navbar-brand" href="#">Galaxy Swiss Bourdin</a>
     </div>
