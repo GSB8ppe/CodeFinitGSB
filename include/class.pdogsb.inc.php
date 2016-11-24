@@ -64,16 +64,12 @@ class PdoGsb{
 		return $ligne;
 	}
         
-       public function getProfil($req)
+       public function getProfil($login,$mdp)
        {
-//            //$req1 = "select nom as nom from profil p inner join utilisateur u on p.id=u.idProfil where utilisateur.login='$login' and utilisateur.mdp='$mdp'";
-//            $visiteur = getInfosVisiteur($login,$mdp);
-//            $id = $visiteur['idProfil'];
-//            $req = "select nom as profil from profil where id='.$id.'";
-//            $rs1 = PdoGsb::$monPdo->query($req);
-//            $nom = $rs1->fetch();
-           $rs = PdoGsb::$monPdo->query($req);
-                                return $rs;
+            $req = "select profil.nom as nom from profil where id=(select idProfil from utilisateur where utilisateur.login='$login' and utilisateur.mdp='$mdp')";
+            $rs = PdoGsb::$monPdo->query($req);
+            $nom = $rs->fetch();
+            return $nom;
        }
 
         

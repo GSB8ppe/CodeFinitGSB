@@ -13,7 +13,6 @@ switch($action){
 			$login = $_REQUEST['login'];
 			$mdp =  $_REQUEST['mdp'];
 			$type = $_REQUEST['type'];
-                        $idProfil = $_REQUEST['idProfil'];
 			$pdo->ajouterVisiteur($nom, $prenom, $login, $mdp, $type);
 			include('vues/v_redirection.php'); 
 		
@@ -33,12 +32,7 @@ switch($action){
 		$login = $_REQUEST['login'];
 		$mdp = $_REQUEST ['mdp'];
 		$visiteur = $pdo->getInfosVisiteur($login,$mdp);
-             
-            $id2 = $visiteur['idProfil'];
-            $req = "select nom as profil from profil where id='.$id2.'";
-            $rs1 = $pdo->getProfil($req);
-            $nom2 = $rs1->fetch();
-                //$profil = $pdo->getProfil($login,$mdp);
+                $profil = $pdo->getProfil($login,$mdp);
 		if(!is_array( $visiteur)){
 			ajouterErreur("Login ou mot de passe incorrect");
 			include("vues/v_erreurs.php");
@@ -48,8 +42,8 @@ switch($action){
 			$id = $visiteur['id'];
 			$nom =  $visiteur['nom'];
 			$prenom = $visiteur['prenom'];
-                        $idProfil = $nom2['profil'];
-			connecter($id,$nom,$prenom,$idProfil);
+                        $profil = $profil['nom'];
+			connecter($id,$nom,$prenom,$profil);
 			include("vues/v_sommaire.php");
 			}
 
