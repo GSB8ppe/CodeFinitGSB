@@ -20,7 +20,7 @@ class PdoGsb{
       	private static $serveur='mysql:host=localhost';
       	private static $bdd='dbname=gsbAppliFrais';   		
       	private static $user='root' ;    		
-      	private static $mdp='' ;//!!!!!!!!!! A CHANGER SELON LES PARAM DE SON LOGIN MYSQL !!!!!!!!!!!!!!!!
+      	private static $mdp='mysql' ;//!!!!!!!!!! A CHANGER SELON LES PARAM DE SON LOGIN MYSQL !!!!!!!!!!!!!!!!
 		private static $monPdo;
 		private static $monPdoGsb=null;
 		
@@ -87,17 +87,17 @@ class PdoGsb{
  * @param $mois sous la forme aaaamm
  * @return tous les champs des lignes de frais hors forfait sous la forme d'un tableau associatif 
 */
-	public function getLesFraisHorsForfait($idVisiteur,$mois){
-	    $req = "select * from LigneFraisHorsForfait where LigneFraisHorsForfait.idvisiteur ='$idVisiteur' 
-		and LigneFraisHorsForfait.mois = '$mois' ";	
+	public function getLesfraishorsforfait($idVisiteur,$mois){
+	    $req = "select * from lignefraishorsforfait where lignefraishorsforfait.idvisiteur ='$idVisiteur' 
+		and lignefraishorsforfait.mois = '$mois' ";	
 		$res = PdoGsb::$monPdo->query($req);
-		$lesLignes = $res->fetchAll();
-		$nbLignes = count($lesLignes);
-		for ($i=0; $i<$nbLignes; $i++){
-			$date = $lesLignes[$i]['date'];
-			$lesLignes[$i]['date'] =  dateAnglaisVersFrancais($date);
+		$leslignes = $res->fetchAll();
+		$nblignes = count($leslignes);
+		for ($i=0; $i<$nblignes; $i++){
+			$date = $leslignes[$i]['date'];
+			$leslignes[$i]['date'] =  dateAnglaisVersFrancais($date);
 		}
-		return $lesLignes; 
+		return $leslignes; 
 	}
 /**
  * Retourne le nombre de justificatif d'un visiteur pour un mois donné
@@ -107,10 +107,10 @@ class PdoGsb{
  * @return le nombre entier de justificatifs 
 */
 	public function getNbjustificatifs($idVisiteur, $mois){
-		$req = "select FicheFrais.nbjustificatifs as nb from  FicheFrais where FicheFrais.idvisiteur ='$idVisiteur' and FicheFrais.mois = '$mois'";
+		$req = "select fichefrais.nbjustificatifs as nb from  fichefrais where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
 		$res = PdoGsb::$monPdo->query($req);
-		$laLigne = $res->fetch();
-		return $laLigne['nb'];
+		$laligne = $res->fetch();
+		return $laligne['nb'];
 	}
 /**
  * Retourne sous forme d'un tableau associatif toutes les lignes de frais au forfait
@@ -121,25 +121,25 @@ class PdoGsb{
  * @return l'id, le libelle et la quantité sous la forme d'un tableau associatif 
 */
 	public function getLesFraisForfait($idVisiteur, $mois){
-		$req = "select FraisForfait.id as idfrais, FraisForfait.libelle as libelle, 
-		LigneFraisForfait.quantite as quantite from LigneFraisForfait inner join FraisForfait 
-		on FraisForfait.id = LigneFraisForfait.idfraisforfait
-		where LigneFraisForfait.idvisiteur ='$idVisiteur' and LigneFraisForfait.mois='$mois' 
-		order by LigneFraisForfait.idfraisforfait";	
+		$req = "select fraisforfait.id as idfrais, fraisforfait.libelle as libelle, 
+		lignefraisforfait.quantite as quantite from lignefraisforfait inner join fraisforfait 
+		on fraisforfait.id = lignefraisforfait.idfraisforfait
+		where lignefraisforfait.idvisiteur ='$idVisiteur' and lignefraisforfait.mois='$mois' 
+		order by lignefraisforfait.idfraisforfait";	
 		$res = PdoGsb::$monPdo->query($req);
-		$lesLignes = $res->fetchAll();
-		return $lesLignes; 
+		$leslignes = $res->fetchAll();
+		return $leslignes; 
 	}
 /**
- * Retourne tous les id de la table FraisForfait
+ * Retourne tous les id de la table fraisforfait
  
  * @return un tableau associatif 
 */
 	public function getLesIdFrais(){
-		$req = "select FraisForfait.id as idfrais from FraisForfait order by FraisForfait.id";
+		$req = "select fraisforfait.id as idfrais from fraisforfait order by fraisforfait.id";
 		$res = PdoGsb::$monPdo->query($req);
-		$lesLignes = $res->fetchAll();
-		return $lesLignes;
+		$leslignes = $res->fetchAll();
+		return $leslignes;
 	}
 /**
  * Met à jour la table lignefraisforfait
@@ -156,9 +156,9 @@ class PdoGsb{
 		$lesCles = array_keys($lesFrais);
 		foreach($lesCles as $unIdFrais){
 			$qte = $lesFrais[$unIdFrais];
-			$req = "update LigneFraisForfait set LigneFraisForfait.quantite = $qte
-			where LigneFraisForfait.idvisiteur = '$idVisiteur' and LigneFraisForfait.mois = '$mois'
-			and LigneFraisForfait.idfraisforfait = '$unIdFrais'";
+			$req = "update lignefraisforfait set lignefraisforfait.quantite = $qte
+			where lignefraisforfait.idvisiteur = '$idVisiteur' and lignefraisforfait.mois = '$mois'
+			and lignefraisforfait.idfraisforfait = '$unIdFrais'";
 			PdoGsb::$monPdo->exec($req);
 		}
 		
@@ -172,8 +172,8 @@ class PdoGsb{
  * @param $nbJustificatifs
 */
 	public function majNbJustificatifs($idVisiteur, $mois, $nbJustificatifs){
-		$req = "update FicheFrais set nbjustificatifs = $nbJustificatifs 
-		where FicheFrais.idvisiteur = '$idVisiteur' and FicheFrais.mois = '$mois'";
+		$req = "update fichefrais set nbjustificatifs = $nbJustificatifs 
+		where fichefrais.idvisiteur = '$idVisiteur' and fichefrais.mois = '$mois'";
 		PdoGsb::$monPdo->exec($req);	
 	}
 /**
@@ -186,11 +186,11 @@ class PdoGsb{
 	public function estPremierFraisMois($idVisiteur,$mois)
 	{
 		$ok = false;
-		$req = "select count(*) as nblignesfrais from FicheFrais 
-		where FicheFrais.mois = '$mois' and FicheFrais.idvisiteur = '$idVisiteur'";
+		$req = "select count(*) as nblignesfrais from fichefrais 
+		where fichefrais.mois = '$mois' and fichefrais.idvisiteur = '$idVisiteur'";
 		$res = PdoGsb::$monPdo->query($req);
-		$laLigne = $res->fetch();
-		if($laLigne['nblignesfrais'] == 0){
+		$laligne = $res->fetch();
+		if($laligne['nblignesfrais'] == 0){
 			$ok = true;
 		}
 		return $ok;
@@ -202,36 +202,36 @@ class PdoGsb{
  * @return le mois sous la forme aaaamm
 */	
 	public function dernierMoisSaisi($idVisiteur){
-		$req = "select max(mois) as dernierMois from FicheFrais where FicheFrais.idvisiteur = '$idVisiteur'";
+		$req = "select max(mois) as dernierMois from fichefrais where fichefrais.idvisiteur = '$idVisiteur'";
 		$res = PdoGsb::$monPdo->query($req);
-		$laLigne = $res->fetch();
-		$dernierMois = $laLigne['dernierMois'];
+		$laligne = $res->fetch();
+		$dernierMois = $laligne['dernierMois'];
 		return $dernierMois;
 	}
 	
 /**
  * Crée une nouvelle fiche de frais et les lignes de frais au forfait pour un visiteur et un mois donnés
  
- * récupère le dernier mois en cours de traitement, met à 'CL' son champs idEtat, crée une nouvelle fiche de frais
- * avec un idEtat à 'CR' et crée les lignes de frais forfait de quantités nulles 
+ * récupère le dernier mois en cours de traitement, met à 'CL' son champs idetat, crée une nouvelle fiche de frais
+ * avec un idetat à 'CR' et crée les lignes de frais forfait de quantités nulles 
  * @param $idVisiteur 
  * @param $mois sous la forme aaaamm
 */
-	public function creeNouvellesLignesFrais($idVisiteur,$mois){
+	public function creeNouvelleslignesFrais($idVisiteur,$mois){
 		$dernierMois = $this->dernierMoisSaisi($idVisiteur);
-		$laDerniereFiche = $this->getLesInfosFicheFrais($idVisiteur,$dernierMois);
+		$laDerniereFiche = $this->getLesInfosfichefrais($idVisiteur,$dernierMois);
 		if($laDerniereFiche['idEtat']=='CR'){
-				$this->majEtatFicheFrais($idVisiteur, $dernierMois,'CL');
+				$this->majetatfichefrais($idVisiteur, $dernierMois,'CL');
 				
 		}
-		$req = "insert into FicheFrais(idvisiteur,mois,nbJustificatifs,montantValide,dateModif,idEtat) 
+		$req = "insert into fichefrais(idvisiteur,mois,nbJustificatifs,montantValide,dateModif,idEtat) 
 		values('$idVisiteur','$mois',0,0,now(),'CR')";
                 
 		PdoGsb::$monPdo->exec($req);
 		$lesIdFrais = $this->getLesIdFrais();
-		foreach($lesIdFrais as $uneLigneIdFrais){
-			$unIdFrais = $uneLigneIdFrais['idfrais'];
-			$req = "insert into LigneFraisForfait(idvisiteur,mois,idFraisForfait,quantite) 
+		foreach($lesIdFrais as $uneligneIdFrais){
+			$unIdFrais = $uneligneIdFrais['idfrais'];
+			$req = "insert into lignefraisforfait(idvisiteur,mois,idfraisforfait,quantite) 
 			values('$idVisiteur','$mois','$unIdFrais',0)";
 			PdoGsb::$monPdo->exec($req);
 		 }
@@ -249,9 +249,9 @@ class PdoGsb{
  * @param $date : la date du frais au format français jj//mm/aaaa
  * @param $montant : le montant
 */
-	public function creeNouveauFraisHorsForfait($idVisiteur,$mois,$libelle,$date,$montant){
+	public function creeNouveaufraishorsforfait($idVisiteur,$mois,$libelle,$date,$montant){
 		$dateFr = dateFrancaisVersAnglais($date);
-		$req = "insert into LigneFraisHorsForfait 
+		$req = "insert into lignefraishorsforfait 
 		values(DEFAULT,'$idVisiteur','$mois','$libelle','$dateFr','$montant')";
 		PdoGsb::$monPdo->exec($req);
 	}
@@ -262,8 +262,8 @@ class PdoGsb{
  
  * @param $idFrais 
 */
-	public function supprimerFraisHorsForfait($idFrais){
-		$req = "delete from LigneFraisHorsHorfait where LigneFraisHorsHorfait.id =$idFrais ";
+	public function supprimerfraishorsforfait($idFrais){
+		$req = "delete from ligneFraisHorsHorfait where ligneFraisHorsHorfait.id =$idFrais ";
 		PdoGsb::$monPdo->exec($req);
 	}
 /**
@@ -273,13 +273,13 @@ class PdoGsb{
  * @return un tableau associatif de clé un mois -aaaamm- et de valeurs l'année et le mois correspondant 
 */
 	public function getLesMoisDisponibles($idVisiteur){
-		$req = "select FicheFrais.mois as mois from  FicheFrais where FicheFrais.idvisiteur ='$idVisiteur' and FicheFrais.idEtat in ('CR', 'VA')
-		order by FicheFrais.mois desc ";
+		$req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.idEtat in ('CR', 'VA')
+		order by fichefrais.mois desc ";
 		$res = PdoGsb::$monPdo->query($req);
 		$lesMois =array();
-		$laLigne = $res->fetch();
-		while($laLigne != null)	{
-			$mois = $laLigne['mois'];
+		$laligne = $res->fetch();
+		while($laligne != null)	{
+			$mois = $laligne['mois'];
 			$numAnnee =substr( $mois,0,4);
 			$numMois =substr( $mois,4,2);
 			$lesMois["$mois"]=array(
@@ -287,7 +287,7 @@ class PdoGsb{
 		    "numAnnee"  => "$numAnnee",
 			"numMois"  => "$numMois"
              );
-			$laLigne = $res->fetch(); 		
+			$laligne = $res->fetch(); 		
 		}
 		return $lesMois;
 	}
@@ -300,25 +300,25 @@ class PdoGsb{
  * @param $mois sous la forme aaaamm
  * @return un tableau avec des champs de jointure entre une fiche de frais et la ligne d'état 
 */	
-	public function getLesInfosFicheFrais($idVisiteur,$mois){
-		$req = "select FicheFrais.idEtat as idEtat, FicheFrais.dateModif as dateModif, FicheFrais.nbJustificatifs as nbJustificatifs, 
-			FicheFrais.montantValide as montantValide, Etat.libelle as libEtat from  FicheFrais inner join Etat on FicheFrais.idEtat = Etat.id 
-			where FicheFrais.idvisiteur ='$idVisiteur' and FicheFrais.mois = '$mois'";
+	public function getLesInfosfichefrais($idVisiteur,$mois){
+		$req = "select fichefrais.idetat as idEtat, fichefrais.dateModif as dateModif, fichefrais.nbJustificatifs as nbJustificatifs, 
+			fichefrais.montantValide as montantValide, etat.libelle as libEtat from  fichefrais inner join etat on fichefrais.idetat = etat.id 
+			where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
 		$res = PdoGsb::$monPdo->query($req);
-		$laLigne = $res->fetch();
-		return $laLigne;
+		$laligne = $res->fetch();
+		return $laligne;
 	}
 /**
  * Modifie l'état et la date de modification d'une fiche de frais
  
- * Modifie le champ idEtat et met la date de modif à aujourd'hui
+ * Modifie le champ idetat et met la date de modif à aujourd'hui
  * @param $idVisiteur 
  * @param $mois sous la forme aaaamm
  */
  
-	public function majEtatFicheFrais($idVisiteur,$mois,$etat){
-		$req = "update FicheFrais set idEtat = '$etat', dateModif = now() 
-		where FicheFrais.idvisiteur ='$idVisiteur' and FicheFrais.mois = '$mois'";
+	public function majetatfichefrais($idVisiteur,$mois,$etat){
+		$req = "update fichefrais set idEtat = '$etat', dateModif = now() 
+		where fichefrais.idvisiteur ='$idVisiteur' and fichefrais.mois = '$mois'";
 		PdoGsb::$monPdo->exec($req);
 	}
 	

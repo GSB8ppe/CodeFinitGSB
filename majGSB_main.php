@@ -9,7 +9,7 @@ include("include/fct.inc.onlydev.php");
 $serveur='mysql:host=localhost';
 $bdd='dbname=gsbAppliFrais';   		
 $user='root' ;    		
-$mdp='' ;	
+$mdp='mysql' ;	
 
 /* fin param�tres*/
 
