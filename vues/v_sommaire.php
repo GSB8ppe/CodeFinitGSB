@@ -43,7 +43,7 @@
       </ul>
       <ul class="nav navbar-nav navbar-right">
 		  <li><a><?php echo $_SESSION['prenom']."  ".$_SESSION['nom']?></a></li>
-		  <li><a>Visiteur médical</a></li>
+		  <li><a><?php echo $_SESSION['idProfil']?></a></li>
         <li class="active"><a href="index.php?uc=connexion&action=deconnexion">Se déconnecter </a></li>
      </ul>
     </div><!-- /.navbar-collapse -->

@@ -9,7 +9,7 @@ $numMois =substr( $mois,4,2);
 $action = $_REQUEST['action'];
 switch($action){
 	case 'saisirFrais':{
-            
+            //echo "ok";
 		if($pdo->estPremierFraisMois($idVisiteur,$mois)){
 			$pdo->creeNouvellesLignesFrais($idVisiteur,$mois);
 		}
@@ -18,13 +18,19 @@ switch($action){
 	case 'validerMajFraisForfait':{
                 
 		$lesFrais = $_REQUEST['lesFrais'];
-		if(lesQteFraisValides($lesFrais)){
+		if(lesQteFraisValides($lesFrais)==true and infosFrais($lesFrais)==true){
 	  	 	$pdo->majFraisForfait($idVisiteur,$mois,$lesFrais);
 		}
-		else{
-			ajouterErreur("Les valeurs des frais doivent �tre num�riques");
-			include("vues/v_erreurs.php");
-		}
+		elseif (infosFrais($lesFrais)==false) {
+                
+                    ajouterErreur("Les champ ne peuvent pas être vides");
+                }
+                else {
+                    ajouterErreur("Les valeurs des frais doivent être numériques");
+                    include("vues/v_erreurs.php");
+                }
+			
+		
 	  break;
 	}
 	case 'validerCreationFrais':{

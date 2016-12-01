@@ -68,7 +68,7 @@ function getMois($date){
  * @return vrai ou faux
 */
 function estEntierPositif($valeur) {
-	return preg_match("/[^0-9]/", $valeur) == 0;
+	return preg_match("/^[1-9][0-9]*$/", $valeur);
 	
 }
 
@@ -80,13 +80,13 @@ function estEntierPositif($valeur) {
 */
 function estTableauEntiers($tabEntiers) {
 	$ok = true;
-	if (isset($unEntier) ){
+	//if (isset($unEntier) ){
 		foreach($tabEntiers as $unEntier){
 			if(!estEntierPositif($unEntier)){
 		 		$ok=false; 
 			}
 		}	
-	}
+	//}
 	return $ok;
 }
 /**
@@ -211,7 +211,17 @@ function convertMois($numMois){
 function messMois(){
     $mois = convertMois(date("m"));
     $annee = date("y");
-    return "Aujourd'hui nous sommes en ".$mois." ".$annee;
+    return "Aujourd'hui nous sommes le ".$mois." ".$annee;
+}
+function infosFrais($tabFrais){
+    $ok=true;
+    foreach($tabFrais as $uneVal){
+			if($uneVal==""){
+		 	 
+                         $ok=false;
+			}
+		}	
+                return $ok;
 }
 ?>
 
