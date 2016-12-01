@@ -69,6 +69,7 @@ function getMois($date){
 */
 function estEntierPositif($valeur) {
 	return preg_match("/^[1-9][0-9]*$/", $valeur);
+        
 	
 }
 
