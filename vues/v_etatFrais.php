@@ -10,7 +10,7 @@
 	
   	<table class="table">
 				</br></br>
-           <caption><?php echo messMois()?> </caption>
+           <caption><?php echo messMois() ?> </caption>
   	   <caption>Eléments forfaitisés </caption>
         <tr>
          <?php

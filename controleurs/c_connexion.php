@@ -30,7 +30,7 @@ switch($action){
 	}
 	case 'valideConnexion':{
 		$login = $_REQUEST['login'];
-		$mdp = $_REQUEST ['mdp'];
+		$mdp = MD5($_REQUEST ['mdp']);
 		$visiteur = $pdo->getInfosVisiteur($login,$mdp);
                 $profil = $pdo->getProfil($login,$mdp);
 		if(!is_array( $visiteur)){

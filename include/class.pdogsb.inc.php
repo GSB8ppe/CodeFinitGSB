@@ -321,6 +321,26 @@ class PdoGsb{
 		where FicheFrais.idvisiteur ='$idVisiteur' and FicheFrais.mois = '$mois'";
 		PdoGsb::$monPdo->exec($req);
 	}
+        public function testMDP(){
+            
+             $ret=false;
+		$req = "select utilisateur.mdp from visiteur";
+		$res = PdoGsb::$monPdo->query($req);
+		$ligne = $res->fetch();
+                while($res->fetch())
+                {
+                    if(strlen(htmlspecialchars($ligne['mdp']))<15)
+                    {
+                        $ret=true;
+                        
+                    }
+                }
+		return $ret;
+        }
+        public function majBDD(){
+            $req='ALTER TABLE `utilisateur` CHANGE `mdp` `mdp` VARCHAR(32) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL; UPDATE `visiteur` SET `mdp`=MD5(mdp);';
+            PdoGsb::$monPdo->exec($req);
+        }
 	
 	
 }
